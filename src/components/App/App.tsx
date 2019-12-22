@@ -1,42 +1,36 @@
-import React from "react";
-import gql from "graphql-tag";
+import React, { memo, useEffect } from "react";
+import { Switch, Route, useHistory } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
+import Login from "components/Login";
+import Dashboard from "components/Dashboard";
+import { UserData } from "lib/types";
+import { USER } from "./queries/api";
 import "./App.css";
 
-const USER_BY_ID = gql`
-  query UserByID($id: ID!) {
-    userById(id: $id) {
-      id
-      email
-    }
-  }
-`;
-
 const App: React.FC = () => {
-  const query = useQuery(USER_BY_ID, {
-    context: {
-      testContext: true
-    },
-    variables: { id: "ck4332g32ly0x0922q6y11ask" }
-  });
-  console.log("query => ", query);
+  const { data, loading } = useQuery<UserData, void>(USER);
+  const history = useHistory();
+
+  useEffect(() => {
+    if (!loading) {
+      history.replace(data?.user ? "/dashboard" : "/login");
+    }
+  }, [data, history, loading]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Switch>
+      <Route path="/login">
+        <Login />
+      </Route>
+      <Route path="/dashboard">
+        <Dashboard />
+      </Route>
+    </Switch>
   );
 };
 
-export default App;
+export default memo(App);
