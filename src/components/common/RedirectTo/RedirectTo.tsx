@@ -13,6 +13,7 @@ type Props = {
 const RedirectTo: React.FC<Props> = ({ handleFailure, handleSuccess }) => {
   const { data, loading } = useQuery<UserData, void>(USER_CACHE);
   const location = useLocation();
+  const user = data?.user;
 
   if (loading) {
     return null;
@@ -22,21 +23,19 @@ const RedirectTo: React.FC<Props> = ({ handleFailure, handleSuccess }) => {
     return (
       <Redirect
         to={
-          data?.user
-            ? location.state?.[REFERRER_STATE_KEY] || "/dashboard"
-            : "/login"
+          user ? location.state?.[REFERRER_STATE_KEY] || "/dashboard" : "/login"
         }
       />
     );
   }
 
-  if (handleSuccess && data?.user) {
+  if (handleSuccess && user) {
     return (
       <Redirect to={location.state?.[REFERRER_STATE_KEY] || "/dashboard"} />
     );
   }
 
-  if (handleFailure && !data?.user) {
+  if (handleFailure && !user) {
     return (
       <Redirect
         to={{
