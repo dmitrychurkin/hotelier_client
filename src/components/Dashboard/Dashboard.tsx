@@ -1,13 +1,15 @@
 import React, { memo } from "react";
-import { useLogout } from "lib/hooks";
+import { useLogout } from "./hooks";
+import RedirectTo from "components/common/RedirectTo";
 
 const Dashboard: React.FC = () => {
-  const onLogout = useLogout();
+  const logout = useLogout();
 
   return (
     <>
+      <RedirectTo handleFailure />
       <h1>Dashboard</h1>
-      <button onClick={onLogout}>Logout</button>
+      <button onClick={logout}>Logout</button>
     </>
   );
 };

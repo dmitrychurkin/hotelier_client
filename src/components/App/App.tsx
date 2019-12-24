@@ -1,35 +1,33 @@
-import React, { memo, useEffect } from "react";
-import { Switch, Route, useHistory } from "react-router-dom";
+import React, { memo } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
+import RedirectTo from "components/common/RedirectTo";
 import Login from "components/Login";
 import Dashboard from "components/Dashboard";
 import { UserData } from "lib/types";
 import { USER } from "./queries/api";
-import "./App.css";
 
 const App: React.FC = () => {
-  const { data, loading } = useQuery<UserData, void>(USER);
-  const history = useHistory();
-
-  useEffect(() => {
-    if (!loading) {
-      history.replace(data?.user ? "/dashboard" : "/login");
-    }
-  }, [data, history, loading]);
+  const { loading } = useQuery<UserData, void>(USER);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <Switch>
-      <Route path="/login">
-        <Login />
-      </Route>
-      <Route path="/dashboard">
-        <Dashboard />
-      </Route>
-    </Switch>
+    <Router>
+      <Switch>
+        <Route exact path="/">
+          <RedirectTo />
+        </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/dashboard">
+          <Dashboard />
+        </Route>
+      </Switch>
+    </Router>
   );
 };
 

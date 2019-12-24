@@ -6,14 +6,15 @@ import { useCallback } from "react";
 export function useLogout() {
   const client = useApolloClient();
   const history = useHistory();
-  const cb = useCallback(() => {
-    return client.clearStore().finally(() => {
+
+  return useCallback(async () => {
+    try {
+      await client.clearStore();
+    } finally {
       localStorage.removeItem(AUTH_TOKEN_NAME);
       history.replace("/login", {
         [REFERRER_STATE_KEY]: history.location.pathname
       });
-    });
+    }
   }, [client, history]);
-
-  return cb;
 }

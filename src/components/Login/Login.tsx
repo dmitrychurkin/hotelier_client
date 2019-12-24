@@ -1,16 +1,22 @@
 import React, { memo, useCallback, useRef } from "react";
 import { useMutation } from "@apollo/react-hooks";
-import { useHistory } from "react-router-dom";
 import { LOGIN } from "./mutations/api";
 import { LoginPayload, LoginDetails } from "./types";
-import { REFERRER_STATE_KEY } from "consts";
+import RedirectTo from "components/common/RedirectTo";
+import { USER_CACHE } from "lib/queries/client";
 
 const Login: React.FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passRef = useRef<HTMLInputElement>(null);
 
-  const [login] = useMutation<LoginPayload, LoginDetails>(LOGIN);
-  const history = useHistory();
+  const [login, { loading }] = useMutation<LoginPayload, LoginDetails>(LOGIN, {
+    update: (store, { data }) => {
+      if (data?.login) {
+        const { login: user } = data;
+        store.writeQuery({ query: USER_CACHE, data: { user } });
+      }
+    }
+  });
 
   const onSubmit = useCallback(
     async e => {
@@ -20,35 +26,30 @@ const Login: React.FC = () => {
 
       if (emailEl && passwordEl) {
         try {
-          const result = await login({
+          await login({
             variables: {
               email: emailEl.value.trim(),
               password: passwordEl.value.trim()
             }
           });
-          console.log(
-            "result => ",
-            result,
-            history.location.state?.[REFERRER_STATE_KEY]
-          );
-          history.replace(
-            history.location.state?.[REFERRER_STATE_KEY] || "/dashboard"
-          );
         } catch (err) {
-          console.log("login err => ", err);
+          console.error(err);
         }
       }
     },
-    [login, history]
+    [login]
   );
 
   return (
     <>
+      <RedirectTo handleSuccess />
       <h1>Login</h1>
       <form onSubmit={onSubmit}>
         <input ref={emailRef} type="email" name="email" />
         <input ref={passRef} type="password" name="password" />
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          Login
+        </button>
       </form>
     </>
   );

@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router } from "react-router-dom";
 import { ApolloProvider } from "@apollo/react-hooks";
 import client from "./graphql-client";
 import App from "components/App";
@@ -13,9 +12,7 @@ const root = document.getElementById("root");
 if (root) {
   ReactDOM.render(
     <ApolloProvider client={client}>
-      <Router>
-        <App />
-      </Router>
+      <App />
     </ApolloProvider>,
     root
   );
