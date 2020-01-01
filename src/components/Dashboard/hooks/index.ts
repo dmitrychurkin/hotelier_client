@@ -1,20 +1,15 @@
-import { useApolloClient } from "@apollo/react-hooks";
-import { useHistory } from "react-router-dom";
-import { AUTH_TOKEN_NAME, REFERRER_STATE_KEY } from "consts";
 import { useCallback } from "react";
+import { useApolloClient, useMutation } from "@apollo/react-hooks";
+import { LOGOUT } from "../mutations/api";
 
 export function useLogout() {
   const client = useApolloClient();
-  const history = useHistory();
+  const [logout] = useMutation<{ logout: boolean }, void>(LOGOUT);
 
   return useCallback(async () => {
     try {
-      await client.clearStore();
-    } finally {
-      localStorage.removeItem(AUTH_TOKEN_NAME);
-      history.replace("/login", {
-        [REFERRER_STATE_KEY]: history.location.pathname
-      });
-    }
-  }, [client, history]);
+      await logout();
+      await client.resetStore();
+    } catch {}
+  }, [client, logout]);
 }

@@ -2,7 +2,6 @@ import React, { memo, useCallback, useRef } from "react";
 import { useMutation } from "@apollo/react-hooks";
 import { LOGIN } from "./mutations/api";
 import { LoginPayload, LoginDetails } from "./types";
-import RedirectTo from "components/common/RedirectTo";
 import { USER_CACHE } from "lib/queries/client";
 
 const Login: React.FC = () => {
@@ -18,7 +17,7 @@ const Login: React.FC = () => {
     }
   });
 
-  const onSubmit = useCallback(
+  const submit = useCallback(
     async e => {
       e.preventDefault();
       const emailEl = emailRef.current;
@@ -42,9 +41,8 @@ const Login: React.FC = () => {
 
   return (
     <>
-      <RedirectTo handleSuccess />
       <h1>Login</h1>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={submit}>
         <input ref={emailRef} type="email" name="email" />
         <input ref={passRef} type="password" name="password" />
         <button type="submit" disabled={loading}>

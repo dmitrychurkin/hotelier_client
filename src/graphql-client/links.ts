@@ -1,12 +1,13 @@
-import { ApolloLink } from "apollo-link";
+// import { ApolloLink } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
-import { AUTH_TOKEN_NAME, TOKEN_HEADER_NAME, GQL_ENDPOINT } from "consts";
+import { GQL_ENDPOINT } from "consts";
 
 const httpLink = new HttpLink({
-  uri: GQL_ENDPOINT
+  uri: GQL_ENDPOINT,
+  credentials: "include"
 });
 
-const middlewareLink = new ApolloLink((operation, forward) => {
+/* const middlewareLink = new ApolloLink((operation, forward) => {
   operation.setContext((args: any) => {
     const { headers = {} } = args;
     const authToken = localStorage.getItem(AUTH_TOKEN_NAME);
@@ -28,6 +29,6 @@ const middlewareLink = new ApolloLink((operation, forward) => {
     }
     return response;
   });
-});
+}); */
 
-export default middlewareLink.concat(httpLink);
+export default httpLink; // middlewareLink.concat(httpLink);
