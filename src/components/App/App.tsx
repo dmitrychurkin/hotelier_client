@@ -1,29 +1,39 @@
 import React, { memo } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
+import { ThemeProvider } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Box from "@material-ui/core/Box";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { UserData } from "lib/types";
 import { USER } from "./queries/api";
 import AppRoutes from "components/common/AppRoutes";
 import routes from "./routes";
+import theme from "./theme";
 
 const App: React.FC = () => {
-  const { loading, ...rest } = useQuery<UserData, void>(USER);
-  console.log("App useQuery => ", rest, loading);
+  const { loading } = useQuery<UserData, void>(USER);
+
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
-    <BrowserRouter>
-      <AppRoutes
-        config={routes.map(route => ({
-          ...route,
-          exact: true,
-          strict: true,
-          sensitive: true
-        }))}
-      />
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <AppRoutes config={routes} />
+      </BrowserRouter>
+    </ThemeProvider>
   );
 };
 

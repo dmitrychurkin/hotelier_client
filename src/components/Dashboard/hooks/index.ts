@@ -8,8 +8,7 @@ export function useLogout() {
 
   return useCallback(async () => {
     try {
-      await logout();
-      await client.resetStore();
+      await logout().then(() => client.resetStore());
     } catch {}
   }, [client, logout]);
 }

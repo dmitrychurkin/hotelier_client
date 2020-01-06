@@ -1,21 +1,20 @@
 import { Route } from "components/common/AppRoutes/AppRoutes";
-import Login from "components/Login";
 import Dashboard from "components/Dashboard";
-import PasswordEmail from "components/PasswordEmail";
+import NotFound from "components/NotFound";
+import Auth from "components/Auth";
 
 const routes: Array<Route> = [
   {
     key: "root",
     path: "/",
-    exact: true,
     isPrivate: true,
     redirectIfAuthenticated: true
   },
   {
-    key: "login",
-    path: "/login",
+    key: "auth",
+    path: ["/login", "/reset", "/reset/:token"],
     redirectIfAuthenticated: true,
-    component: Login
+    component: Auth
   },
   {
     key: "dashboard",
@@ -24,11 +23,15 @@ const routes: Array<Route> = [
     component: Dashboard
   },
   {
-    key: "password-email",
-    path: "/reset",
-    redirectIfAuthenticated: true,
-    component: PasswordEmail
+    key: "not-found",
+    path: "*",
+    component: NotFound
   }
 ];
 
-export default routes;
+export default routes.map(route => ({
+  ...route,
+  exact: true,
+  strict: true,
+  sensitive: true
+}));

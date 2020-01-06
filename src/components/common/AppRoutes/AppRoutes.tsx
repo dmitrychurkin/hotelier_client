@@ -29,7 +29,6 @@ const AppRouter: React.FC<Props> = ({
   preloader: Fallback = () => <div>Route loading...</div>
 }) => {
   const { data } = useQuery<UserData, void>(USER_CACHE);
-  console.log("AppRouter data => ", data);
   const Wrapper = wrapWithSwitch ? Switch : Fragment;
 
   return (
