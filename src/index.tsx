@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { ApolloProvider } from "@apollo/react-hooks";
 import client from "./graphql-client";
-import App from "components/App";
+import App from "./App";
 import "./index.css";
 
 import * as serviceWorker from "./serviceWorker";

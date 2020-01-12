@@ -1,9 +1,8 @@
 // import { ApolloLink } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
-import { GQL_ENDPOINT } from "consts";
 
 const httpLink = new HttpLink({
-  uri: GQL_ENDPOINT,
+  uri: "http://localhost:8080/query",
   credentials: "include"
 });
 
