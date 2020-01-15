@@ -9,8 +9,7 @@ import { useQuery } from "@apollo/react-hooks";
 import { UserData } from "App/types/User";
 import { USER_CACHE } from "App/queries/client";
 import Spinner from "../Spinner";
-import { LOGIN_ROUTE } from "App/Auth";
-import { DASHBOARD_ROUTE } from "App/routes";
+import { LOGIN_ROUTE, DASHBOARD_ROUTE } from "App/constants";
 
 interface IRoute {
   readonly key: string;

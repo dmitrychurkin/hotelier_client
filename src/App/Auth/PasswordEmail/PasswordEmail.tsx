@@ -8,7 +8,7 @@ import {
 } from "./types";
 import { SEND_RESET } from "./mutations/api";
 import Form from "../common/Form";
-import { LOGIN_ROUTE } from "../routes";
+import { LOGIN_ROUTE } from "App/constants";
 
 const PasswordEmail: React.FC = () => {
   const history = useHistory();

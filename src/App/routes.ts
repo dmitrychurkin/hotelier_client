@@ -3,9 +3,7 @@ import Dashboard from "./Dashboard";
 import NotFound from "./NotFound";
 import Auth, { childRoutes as authRoutes } from "./Auth";
 import PasswordReset from "./Auth/PasswordReset";
-
-export const PASSWORD_RESET_ROUTE = "/reset/:token";
-export const DASHBOARD_ROUTE = "/dashboard";
+import { PASSWORD_RESET_ROUTE, DASHBOARD_ROUTE } from "./constants";
 
 const routes: Array<Route> = [
   {

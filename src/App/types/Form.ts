@@ -1,11 +1,3 @@
-export class Input implements IInput {
-  constructor(
-    public ref: React.MutableRefObject<HTMLInputElement | undefined>,
-    public value = "",
-    public error = ""
-  ) {}
-}
-
 export abstract class AbstractForm implements IFormInputs {
   [key: string]: IInput;
 

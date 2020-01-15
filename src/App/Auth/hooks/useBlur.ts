@@ -5,17 +5,14 @@ export default function useBlur(
   setFormState: (setFormState: SetStateAction<IFormInputs>) => void
 ) {
   return useCallback(
-    ({ target }) => {
-      const { name } = target;
-      setFormState(state => {
-        const updateInput = {
-          [name]: {
-            ...state[name],
-            error: target.validationMessage
-          }
-        };
-        return { ...state, ...updateInput };
-      });
+    ({ target: { name, validationMessage: error } }) => {
+      setFormState(state => ({
+        ...state,
+        [name]: {
+          ...state[name],
+          error
+        }
+      }));
     },
     [setFormState]
   );

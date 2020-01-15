@@ -9,8 +9,9 @@ export default function useChange(
 ) {
   const client = useApolloClient();
   return useCallback(
-    ({ target }: ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = target;
+    ({
+      target: { name, value, validationMessage }
+    }: ChangeEvent<HTMLInputElement>) => {
       const v = value.trim();
 
       if (writeEmailToCache && name === EMAIL) {
@@ -21,17 +22,17 @@ export default function useChange(
         const inputField = state[name];
         let error = "";
         if (inputField.error) {
-          error = inputField.ref.current?.validationMessage ?? "";
+          error = validationMessage;
         }
 
-        const updateInput = {
+        return {
+          ...state,
           [name]: {
             ...inputField,
             error,
             value: v
           }
         };
-        return { ...state, ...updateInput };
       });
     },
     [client, setFormState, writeEmailToCache]

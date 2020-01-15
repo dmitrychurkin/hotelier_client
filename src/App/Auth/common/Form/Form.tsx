@@ -14,11 +14,12 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import { useQuery } from "@apollo/react-hooks";
-import { LOGIN_ROUTE, PASSWORD_EMAIL_ROUTE } from "App/Auth/routes";
+import { LOGIN_ROUTE } from "App/constants";
+import { PASSWORD_EMAIL_ROUTE } from "App/Auth/routes";
 import { EMAIL, PASSWORD } from "App/Auth/Auth";
 import useChange from "App/Auth/hooks/useChange";
 import useBlur from "App/Auth/hooks/useBlur";
-import useFormState from "App/Auth/hooks/useFormState";
+import useFormState, { AuthForm } from "App/Auth/hooks/useFormState";
 import useValidation from "App/Auth/hooks/useValidation";
 import { FORM_EMAIL } from "App/Auth/queries/client";
 import useStyles from "./styles";
@@ -53,30 +54,36 @@ const Form: React.FC<FormProps> = ({ onSubmit, loading }) => {
 
   const change = useChange(setFormState);
   const blur = useBlur(setFormState);
-  console.log("formInputs => ", formInputs);
+
   const submit = useCallback(
-    e => {
+    async e => {
       e.preventDefault();
-      onSubmit(formInputs).catch(() => {
-        // TODO: revise this part of code
-        setFormState(state => {
-          return Object.entries(state).reduce((acc, [k, v]) => {
-            if (k === EMAIL) {
-              client.writeData<{ email: string }>({ data: { email: "" } });
-            }
-            return {
-              ...acc,
-              [k]: {
-                ...v,
-                value: "",
-                error: ""
-              }
-            };
-          }, {});
-        });
-      });
+      try {
+        await onSubmit(formInputs);
+      } catch {
+        // TODO: reset state only on specific error
+        client.writeData<{ email: string }>({ data: { email: "" } });
+        setFormState(
+          state =>
+            new AuthForm(
+              Object.entries(state).reduce(
+                (acc, [k, v]) => ({
+                  ...acc,
+                  [k]: {
+                    ...v,
+                    value: "",
+                    error: ""
+                  }
+                }),
+                {}
+              )
+            )
+        );
+        // Welcome to React (:
+        forceUpdate({});
+      }
     },
-    [onSubmit, formInputs, setFormState, client]
+    [onSubmit, formInputs, client, setFormState]
   );
 
   const email = formInputs[EMAIL];
@@ -86,7 +93,7 @@ const Form: React.FC<FormProps> = ({ onSubmit, loading }) => {
 
   useEffect(() => {
     if (path === PASSWORD_EMAIL_ROUTE) {
-      forceUpdate(null);
+      forceUpdate({});
     }
   }, [path]);
 

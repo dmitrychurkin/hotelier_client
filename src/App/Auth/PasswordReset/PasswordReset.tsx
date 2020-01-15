@@ -25,8 +25,7 @@ import useFormState from "../hooks/useFormState";
 import useChange from "../hooks/useChange";
 import useBlur from "../hooks/useBlur";
 import Auth, { EMAIL, PASSWORD, CONFIRM } from "../Auth";
-import { LOGIN_ROUTE } from "../routes";
-import { DASHBOARD_ROUTE } from "App/routes";
+import { LOGIN_ROUTE, DASHBOARD_ROUTE } from "App/constants";
 
 const PasswordReset: React.FC = () => {
   const classes = useStyles();

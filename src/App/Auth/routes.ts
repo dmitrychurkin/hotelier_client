@@ -1,7 +1,7 @@
 import Login from "./Login";
 import PasswordEmail from "./PasswordEmail";
+import { LOGIN_ROUTE } from "App/constants";
 
-export const LOGIN_ROUTE = "/login";
 export const PASSWORD_EMAIL_ROUTE = "/reset";
 
 const routes = [
