@@ -14,7 +14,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import { useQuery } from "@apollo/react-hooks";
-import { LOGIN_ROUTE } from "App/constants";
+import { LOGIN_ROUTE, PASSWORD_RESET_ROUTE } from "App/constants";
 import { PASSWORD_EMAIL_ROUTE } from "App/Auth/routes";
 import { EMAIL, PASSWORD } from "App/Auth/Auth";
 import useChange from "App/Auth/hooks/useChange";
@@ -62,7 +62,10 @@ const Form: React.FC<FormProps> = ({ onSubmit, loading }) => {
         await onSubmit(formInputs);
       } catch {
         // TODO: reset state only on specific error
-        client.writeData<{ email: string }>({ data: { email: "" } });
+        if (path !== PASSWORD_RESET_ROUTE) {
+          client.writeData<{ email: string }>({ data: { email: "" } });
+        }
+
         setFormState(
           state =>
             new AuthForm(
@@ -83,7 +86,7 @@ const Form: React.FC<FormProps> = ({ onSubmit, loading }) => {
         forceUpdate({});
       }
     },
-    [onSubmit, formInputs, client, setFormState]
+    [onSubmit, formInputs, client, setFormState, path]
   );
 
   const email = formInputs[EMAIL];
