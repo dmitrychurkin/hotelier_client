@@ -164,6 +164,7 @@ const PasswordReset: React.FC = () => {
           error={Boolean(password.error)}
           helperText={password.error}
           value={passwordValue}
+          disabled={resetPasswordLoading}
         />
         <TextField
           onChange={change}
@@ -182,6 +183,7 @@ const PasswordReset: React.FC = () => {
           error={Boolean(confirmPassword.error)}
           helperText={confirmPassword.error}
           value={confirmPasswordValue}
+          disabled={resetPasswordLoading}
         />
         <Button
           type="submit"

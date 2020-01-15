@@ -18,12 +18,15 @@ export default function useFormState(emailValue = "") {
     const input: IInput = {
       ref: emailRef,
       error: "",
-      value: emailValue
+      value: ""
     };
     switch (path) {
       case PASSWORD_EMAIL_ROUTE:
         form = {
-          [EMAIL]: input
+          [EMAIL]: {
+            ...input,
+            value: emailValue
+          }
         };
         break;
 
@@ -42,7 +45,10 @@ export default function useFormState(emailValue = "") {
 
       default: {
         form = {
-          [EMAIL]: input,
+          [EMAIL]: {
+            ...input,
+            value: emailValue
+          },
           [PASSWORD]: {
             ...input,
             ref: passRef

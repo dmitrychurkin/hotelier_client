@@ -14,7 +14,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import { useQuery } from "@apollo/react-hooks";
-import { LOGIN_ROUTE, PASSWORD_RESET_ROUTE } from "App/constants";
+import { LOGIN_ROUTE } from "App/constants";
 import { PASSWORD_EMAIL_ROUTE } from "App/Auth/routes";
 import { EMAIL, PASSWORD } from "App/Auth/Auth";
 import useChange from "App/Auth/hooks/useChange";
@@ -22,7 +22,9 @@ import useBlur from "App/Auth/hooks/useBlur";
 import useFormState, { AuthForm } from "App/Auth/hooks/useFormState";
 import useValidation from "App/Auth/hooks/useValidation";
 import { FORM_EMAIL } from "App/Auth/queries/client";
+import { IFormInputs } from "App/types/Form";
 import useStyles from "./styles";
+import { ExecutionResult } from "graphql";
 
 const ExactRoute: React.FC<RouteProps> = ({ children, ...rest }) => (
   <Route exact strict {...rest}>
@@ -31,7 +33,9 @@ const ExactRoute: React.FC<RouteProps> = ({ children, ...rest }) => (
 );
 
 type FormProps = {
-  readonly onSubmit: (loginForm: any) => Promise<void>;
+  readonly onSubmit: (
+    formInputs: IFormInputs
+  ) => Promise<ExecutionResult | void> | undefined;
   readonly loading: boolean;
 };
 const Form: React.FC<FormProps> = ({ onSubmit, loading }) => {
@@ -43,12 +47,9 @@ const Form: React.FC<FormProps> = ({ onSubmit, loading }) => {
 
   const { path } = useRouteMatch();
 
-  const { data: formEmail, client } = useQuery<{ email: string }, void>(
-    FORM_EMAIL,
-    {
-      fetchPolicy: "cache-only"
-    }
-  );
+  const { data: formEmail } = useQuery<{ email: string }, void>(FORM_EMAIL, {
+    fetchPolicy: "cache-only"
+  });
 
   const [formInputs, setFormState] = useFormState(formEmail?.email);
 
@@ -62,10 +63,6 @@ const Form: React.FC<FormProps> = ({ onSubmit, loading }) => {
         await onSubmit(formInputs);
       } catch {
         // TODO: reset state only on specific error
-        if (path !== PASSWORD_RESET_ROUTE) {
-          client.writeData<{ email: string }>({ data: { email: "" } });
-        }
-
         setFormState(
           state =>
             new AuthForm(
@@ -74,8 +71,7 @@ const Form: React.FC<FormProps> = ({ onSubmit, loading }) => {
                   ...acc,
                   [k]: {
                     ...v,
-                    value: "",
-                    error: ""
+                    value: ""
                   }
                 }),
                 {}
@@ -86,7 +82,7 @@ const Form: React.FC<FormProps> = ({ onSubmit, loading }) => {
         forceUpdate({});
       }
     },
-    [onSubmit, formInputs, client, setFormState, path]
+    [onSubmit, formInputs, setFormState]
   );
 
   const email = formInputs[EMAIL];
@@ -139,6 +135,7 @@ const Form: React.FC<FormProps> = ({ onSubmit, loading }) => {
           error={Boolean(email.error)}
           helperText={email.error}
           value={email.value}
+          disabled={loading}
         />
         <ExactRoute path={LOGIN_ROUTE}>
           <TextField
@@ -158,6 +155,7 @@ const Form: React.FC<FormProps> = ({ onSubmit, loading }) => {
             error={Boolean(password?.error)}
             helperText={password?.error}
             value={password?.value}
+            disabled={loading}
           />
         </ExactRoute>
         {/* <FormControlLabel

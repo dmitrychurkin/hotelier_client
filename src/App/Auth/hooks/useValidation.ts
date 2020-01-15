@@ -17,7 +17,6 @@ export default function useValidation(
       if (!el) {
         return false;
       }
-      console.log("el.validationMessage => ", el.validationMessage);
       return el.validationMessage.length === 0;
     }) && passwordValue === confirmPasswordValue
   );
